@@ -1,0 +1,40 @@
+services:
+  mongo:
+    image: mongo:7
+    container_name: commyrce-mongo
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    volumes:
+      - commyrce-mongo-data:/data/db
+
+  backend:
+    build:
+      context: ./commyrce-backend
+    container_name: commyrce-backend
+    restart: unless-stopped
+    env_file:
+      - ./commyrce-backend/.env
+    environment:
+      MONGO_URI: mongodb://mongo:27017/commyrce
+      CORS_ORIGINS: "http://localhost:3000"
+      FRONTEND_ORIGIN: "http://localhost:3000"
+    ports:
+      - "3001:3001"
+    depends_on:
+      - mongo
+
+  frontend:
+    build:
+      context: ./commyrce-frontend
+    container_name: commyrce-frontend
+    restart: unless-stopped
+    env_file:
+      - ./commyrce-frontend/.env.local
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+
+volumes:
+  commyrce-mongo-data:
