@@ -1,11 +1,12 @@
 # Comm:rce
 
-A production-grade, Shopify-like e-commerce platform. Monorepo with two apps:
+A production-grade, Shopify-like e-commerce platform. npm-workspace monorepo:
 
-| Directory             | Stack                                                          |
-| --------------------- | -------------------------------------------------------------- |
-| `commyrce-backend/`   | Express 5 · TypeScript · MongoDB (Mongoose 8) · Stripe · Cloudinary · Zod |
-| `commyrce-frontend/`  | Next.js 15 (App Router) · React 19 · TypeScript · Tailwind v4 · HeroUI v3 · Redux Toolkit + TanStack Query |
+| Path                 | Package            | Stack                                                                 |
+| -------------------- | ------------------ | --------------------------------------------------------------------- |
+| `apps/backend/`      | `@commyrce/backend`  | Express 5 · TypeScript · MongoDB (Mongoose 8) · Stripe · Cloudinary · Zod |
+| `apps/frontend/`     | `@commyrce/frontend` | Next.js 15 (App Router) · React 19 · TypeScript · Tailwind v4 · HeroUI v3 · Redux Toolkit + TanStack Query |
+| `packages/shared/`   | `@commyrce/shared`   | Shared API-contract types (types-only, consumed by both apps)          |
 
 Money is stored as **integer cents** everywhere (`priceCents`).
 
@@ -24,23 +25,32 @@ Money is stored as **integer cents** everywhere (`priceCents`).
 
 ## Getting started (development)
 
-### 1. Backend
+Everything is installed from the **repo root** (single `node_modules`, one lockfile):
 
 ```bash
-cd commyrce-backend
-cp .env.example .env        # then fill in secrets
-npm install
-npm run seed                # creates admin + 6 categories + 15 products
-npm run dev                 # http://localhost:3001
+npm install          # one install for all workspaces
+npm run dev          # starts API (:3001) + frontend (:3000) together
 ```
 
-### 2. Frontend
+### Env files
 
 ```bash
-cd commyrce-frontend
-cp .env.local.example .env.local   # points at http://localhost:3001
-npm install
-npm run dev                # http://localhost:3000
+cp apps/backend/.env.example apps/backend/.env       # fill in secrets
+cp apps/frontend/.env.local.example apps/frontend/.env.local   # points at http://localhost:3001
+```
+
+### Seed the database
+
+```bash
+npm run seed         # creates admin + 6 categories + 15 products
+```
+
+### Per-workspace commands
+
+```bash
+npm run dev -w @commyrce/backend      # API only  → http://localhost:3001
+npm run dev -w @commyrce/frontend     # web only  → http://localhost:3000
+npm run build -w @commyrce/shared     # rebuild shared types (types-only)
 ```
 
 Both apps must run with cookies: `localhost:3000 → localhost:3001` is a same-site boundary, so cookies flow automatically with `credentials: 'include'`.
@@ -54,7 +64,7 @@ Password: Admin123!
 
 ## Environment variables
 
-**Backend** (`.env`, see `commyrce-backend/.env.example`):
+**Backend** (`.env`, see `apps/backend/.env.example`):
 
 | Variable                  | Description                                   |
 | ------------------------- | --------------------------------------------- |
@@ -96,23 +106,18 @@ GET  /api/admin/categories | POST /api/admin/categories | PATCH/DELETE /api/admi
 
 ## Tests & checks
 
-```bash
-# Backend
-cd commyrce-backend
-npm run test          # vitest (unit + no-DB smoke)
-npm run build
-npm run typecheck
+Run all from the repo root:
 
-# Frontend
-cd commyrce-frontend
-npm run typecheck
-npm run lint          # eslint (flat config + next/core-web-vitals)
-npm run build
+```bash
+npm run typecheck    # tsc --noEmit for backend + frontend
+npm run lint         # eslint (flat config + next/core-web-vitals) on the frontend
+npm run build        # shared → backend → frontend
+npm test             # vitest (unit + no-DB smoke)
 ```
 
 ## Docker
 
-The root-level `docker-compose.yml` starts three services: **MongoDB**, the **API**, and the **frontend**. Each app has its own `Dockerfile`; see `docker-compose.yml` for the service wiring.
+`docker-compose.yml` builds the **backend** and **frontend** from the repo root (`dockerfile: apps/*/Dockerfile`) and starts them alongside **MongoDB**.
 
 ### Spin-up steps
 
@@ -121,25 +126,25 @@ The root-level `docker-compose.yml` starts three services: **MongoDB**, the **AP
 docker info                     # should not error
 
 # 2. Create env files from the templates (add real Stripe/Cloudinary keys)
-cp commyrce-backend/.env.example commyrce-backend/.env
-cp commyrce-frontend/.env.local.example commyrce-frontend/.env.local
+cp apps/backend/.env.example apps/backend/.env
+cp apps/frontend/.env.local.example apps/frontend/.env.local
 
 # 3. Build images and start the stack (run again with --build to rebuild after changes)
 docker compose up --build -d
 
 # 4. Seed the database (admin user + categories + sample products)
-docker compose exec -w /app backend npm run seed
+docker compose exec -w /app backend npm run seed -w @commyrce/backend
 
 # 5. Watch logs
 docker compose logs -f backend frontend
 ```
 
-### Which Docker instance to use
+### Which MongoDB instance to use
 
 The hosted MongoDB container is named `commyrce-mongo` and listens on `27017` — it is shared between the Docker services **and** any locally-running `npm run dev` servers.
 
 - In the **Docker backend service**, the connection string is overridden to `mongodb://mongo:27017/commyrce` by `docker-compose.yml`, so the container reaches its sibling.
-- A **locally-run backend** (`npm run dev`) uses whatever `MONGO_URI` you put in `commyrce-backend/.env` (e.g. `mongodb://localhost:27017/commyrce`).
+- A **locally-run backend** (`npm run dev`) uses whatever `MONGO_URI` you put in `apps/backend/.env` (e.g. `mongodb://localhost:27017/commyrce`).
 
 If you are only running locally, no need to start the Docker stack — Docker is only required when you want the whole stack (DB + API + frontend) containerized.
 
@@ -152,22 +157,26 @@ If you are only running locally, no need to start the Docker stack — Docker is
 ## Project layout
 
 ```
-commyrce-backend/
-  src/
-    server.ts            # bootstrap + listen
-    app.ts               # express app assembly
-    config/
-    models/              # Product, Category, User, Order (Mongoose 8)
-    middlewares/         # auth, rate-limit, upload, error, validate
-    validators/          # zod schemas (objects, arrays, pagination...)
-    services/            # category, order, product, stripe, upload
-    controllers/
-    routes/
-    scripts/seed.ts
-  tests/
-commyrce-frontend/
-  app/                   # App Router pages (storefront + /admin)
-  components/            # shared UI (Header, ShopPage, ProductForm, ButtonLink...)
-  lib/                   # api client, types, hooks, formatting
-  store/                 # Redux cart slice
+apps/
+  backend/
+    src/
+      server.ts            # bootstrap + listen
+      app.ts               # express app assembly
+      config/
+      models/              # Product, Category, User, Order (Mongoose 8)
+      middlewares/         # auth, rate-limit, upload, error, validate
+      validators/          # zod schemas (objects, arrays, pagination...)
+      services/            # category, order, product, stripe, upload
+      controllers/
+      routes/
+      scripts/seed.ts
+    tests/
+  frontend/
+    app/                   # App Router pages (storefront + /admin)
+    components/            # shared UI (Header, ShopPage, ProductForm, ButtonLink...)
+    lib/                   # api client, hooks, formatting
+    store/                 # Redux cart slice
+packages/
+  shared/
+    src/index.ts           # shared API-contract types (@commyrce/shared)
 ```

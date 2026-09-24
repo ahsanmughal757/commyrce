@@ -10,11 +10,12 @@ services:
 
   backend:
     build:
-      context: ./commyrce-backend
+      context: .
+      dockerfile: apps/backend/Dockerfile
     container_name: commyrce-backend
     restart: unless-stopped
     env_file:
-      - ./commyrce-backend/.env
+      - ./apps/backend/.env
     environment:
       MONGO_URI: mongodb://mongo:27017/commyrce
       CORS_ORIGINS: "http://localhost:3000"
@@ -26,11 +27,12 @@ services:
 
   frontend:
     build:
-      context: ./commyrce-frontend
+      context: .
+      dockerfile: apps/frontend/Dockerfile
     container_name: commyrce-frontend
     restart: unless-stopped
     env_file:
-      - ./commyrce-frontend/.env.local
+      - ./apps/frontend/.env.local
     ports:
       - "3000:3000"
     depends_on:
