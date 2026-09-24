@@ -52,9 +52,9 @@ export default function AccountPage() {
   }
 
   return (
-    <div className="mx-auto max-w-2xl space-y-6">
+    <div className="mx-auto max-w-2xl animate-fade-in space-y-6">
       <h1 className="text-2xl font-semibold">My account</h1>
-      <Card className="p-4">
+      <Card className="card-lift border-separator/70 p-4">
         <Card.Content className="flex items-center justify-between gap-4">
           <div className="flex items-center gap-4">
             <div className="flex size-12 items-center justify-center rounded-full bg-foreground/10 text-lg font-semibold">

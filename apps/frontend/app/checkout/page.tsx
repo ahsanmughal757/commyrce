@@ -19,10 +19,12 @@ export default function CheckoutPage() {
 
   if (items.length === 0 && !pending) {
     return (
-      <div className="flex flex-col items-center gap-4 py-24 text-center">
+      <div className="flex animate-fade-in flex-col items-center gap-4 py-24 text-center">
         <h1 className="text-2xl font-semibold">Nothing to check out</h1>
         <p className="text-foreground/60">Your cart is empty.</p>
-        <ButtonLink href="/products">Start shopping</ButtonLink>
+        <ButtonLink href="/products" className="shine">
+          Start shopping
+        </ButtonLink>
       </div>
     )
   }
@@ -49,10 +51,10 @@ export default function CheckoutPage() {
   }
 
   return (
-    <div className="grid gap-8 lg:grid-cols-[1fr_340px]">
+    <div className="grid animate-fade-in gap-8 lg:grid-cols-[1fr_340px]">
       <div className="space-y-4">
         <h1 className="text-2xl font-semibold">Checkout</h1>
-        <Card className="p-4">
+        <Card className="card-lift border-separator/70 p-4">
           <Card.Header>
             <h2 className="text-lg font-semibold">Contact details</h2>
           </Card.Header>
@@ -90,7 +92,7 @@ export default function CheckoutPage() {
       </div>
 
       <div>
-        <Card className="p-4">
+        <Card className="card-lift sticky top-32 border-separator/70 p-4">
           <Card.Header>
             <h2 className="text-lg font-semibold">Order summary</h2>
           </Card.Header>

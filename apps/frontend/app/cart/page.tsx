@@ -17,21 +17,28 @@ export default function CartPage() {
 
   if (items.length === 0) {
     return (
-      <div className="flex flex-col items-center gap-4 py-24 text-center">
-        <ShoppingCart className="size-10 text-foreground/40" />
+      <div className="flex animate-fade-in flex-col items-center gap-4 py-24 text-center">
+        <div className="relative">
+          <div className="aurora aurora-accent -inset-10 opacity-30" />
+          <div className="relative flex size-20 items-center justify-center rounded-2xl border border-separator bg-surface text-foreground/40 shadow-[var(--surface-shadow)]">
+            <ShoppingCart className="size-9" />
+          </div>
+        </div>
         <h1 className="text-2xl font-semibold">Your cart is empty</h1>
         <p className="text-foreground/60">Browse the catalog and add something you love.</p>
-        <ButtonLink href="/products">Start shopping</ButtonLink>
+        <ButtonLink href="/products" className="shine">
+          Start shopping
+        </ButtonLink>
       </div>
     )
   }
 
   return (
-    <div className="grid gap-8 lg:grid-cols-[1fr_320px]">
+    <div className="grid animate-fade-in gap-8 lg:grid-cols-[1fr_320px]">
       <div className="space-y-4">
         <h1 className="text-2xl font-semibold">Cart</h1>
         {items.map((item) => (
-          <Card key={item.productId} className="p-3">
+          <Card key={item.productId} className="card-lift border-separator/70 p-3">
             <Card.Content className="flex items-center gap-4">
               {item.coverImage ? (
                 <div className="relative aspect-square w-20 shrink-0 overflow-hidden rounded-md">
@@ -87,7 +94,7 @@ export default function CartPage() {
       </div>
 
       <div>
-        <Card className="p-4">
+        <Card className="card-lift sticky top-32 border-separator/70 p-4">
           <Card.Header>
             <h2 className="text-lg font-semibold">Summary</h2>
           </Card.Header>

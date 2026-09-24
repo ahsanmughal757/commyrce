@@ -32,8 +32,8 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="mx-auto flex max-w-md flex-col items-center gap-6 py-12">
-      <Card className="w-full p-6">
+    <div className="mx-auto flex max-w-md animate-fade-up flex-col items-center gap-6 py-12">
+      <Card className="w-full border-separator/70 p-6">
         <Card.Header>
           <h1 className="text-2xl font-semibold">Sign in</h1>
         </Card.Header>

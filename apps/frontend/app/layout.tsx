@@ -2,19 +2,23 @@ import type { Metadata } from 'next'
 import { Providers } from './providers'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
+import { fontVariables } from '@/lib/fonts'
 import './globals.css'
 
 export const metadata: Metadata = {
   title: {
-    default: 'Comm:rce',
-    template: '%s | Comm:rce'
+    default: 'Commyrce',
+    template: '%s | Commyrce'
   },
   description: 'A modern commerce storefront and admin console.'
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning className={fontVariables}>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: "document.documentElement.classList.add('js')" }} />
+      </head>
       <body className="min-h-screen bg-background font-sans text-foreground antialiased">
         <Providers>
           <div className="flex min-h-screen flex-col">

@@ -143,6 +143,7 @@ async function runPipeline<T>(
         priceCents: 1,
         discountPercent: 1,
         effectivePriceCents: 1,
+        salePriceCents: '$effectivePriceCents',
         images: 1,
         coverImage: { $arrayElemAt: ['$images', 0] },
         stock: 1,
