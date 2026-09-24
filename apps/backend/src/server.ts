@@ -7,7 +7,7 @@ async function bootstrap(): Promise<void> {
     await connectDB()
     const app = createApp()
     app.listen(env.PORT, () => {
-      console.log(`🚀 Comm:rce API listening on http://localhost:${env.PORT}`)
+      console.log(`🚀 Commyrce API listening on http://localhost:${env.PORT}`)
     })
   } catch (err) {
     console.error('❌ Failed to start server:', err)

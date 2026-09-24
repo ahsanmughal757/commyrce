@@ -3,7 +3,7 @@
   "version": "2.0.0",
   "private": true,
   "type": "module",
-  "description": "Comm:rce — production-grade commerce API",
+  "description": "Commyrce — production-grade commerce API",
   "main": "dist/server.js",
   "scripts": {
     "dev": "tsx watch src/server.ts",

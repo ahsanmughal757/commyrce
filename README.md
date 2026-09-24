@@ -1,4 +1,4 @@
-# Comm:rce
+# Commyrce
 
 A production-grade, Shopify-like e-commerce platform. npm-workspace monorepo:
 

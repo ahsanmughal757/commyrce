@@ -49,7 +49,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       <div className="flex min-h-screen items-center justify-center p-6">
         <div className="w-full max-w-md">
           <ErrorState
-            title="Can&apos;t load admin session"
+            title="Can't load admin session"
             message={error instanceof Error ? error.message : 'Failed to verify your session.'}
             onRetry={() => void refetch()}
           />

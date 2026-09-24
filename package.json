@@ -2,7 +2,7 @@
   "name": "commyrce",
   "private": true,
   "version": "2.0.0",
-  "description": "Comm:rce — production-grade commerce platform (workspace monorepo)",
+  "description": "Commyrce — production-grade commerce platform (workspace monorepo)",
   "workspaces": [
     "apps/*",
     "packages/*"
