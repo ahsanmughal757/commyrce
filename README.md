@@ -1,5 +1,6 @@
-# Commyrce
+<img width="1921" height="5366" alt="image" src="https://github.com/user-attachments/assets/4277f946-cf75-4107-a1fc-5a617635e7cb" />
 
+# Commyrce
 A production-grade, Shopify-like e-commerce platform. npm-workspace monorepo:
 
 | Path                 | Package            | Stack                                                                 |
